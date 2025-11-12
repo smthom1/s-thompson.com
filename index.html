@@ -173,8 +173,8 @@
     /* responsive tweak */
     @media (max-width:700px){
       .win{
-        width:90vw;
-        height:60vh;
+        width:90vw !important;
+        height:60vh !important;
         left: 5vw !important;
         top: 5vh !important;
         resize: none;}}
@@ -415,7 +415,8 @@
     <div class="title">
       <div class="left"><strong>Projects</strong></div>
       <div class="ctrls"><button onclick="closeWin('projects')">&times;</button></div>
-    </div> <div class="content">
+    </div> 
+    <div class="content">
       <div class="explorer">
         <div class="folders">
           <div class="folder" onclick="selectProj('healthAI')">HAPPI (AI Health)</div>
@@ -424,12 +425,15 @@
           <div class="folder" onclick="selectProj('urbanForestry')">Edible Trees Database</div>
           <div class="folder" onclick="selectProj('agentModel')">Agent-Based Model</div>
           <div class="folder" onclick="selectProj('olympicViz')">Olympic Data Viz</div>
-        </div>        
-      </div>
+        </div>
         <div class="preview" id="projPreview">
           <div class="proj-card"><b>Select a project</b><p class="muted">Click a project on the left to see details, tech stack and a demo link.</p></div>
         </div>
       </div>
+        <!-- <div class="preview" id="projPreview">
+          <div class="proj-card"><b>Select a project</b><p class="muted">Click a project on the left to see details, tech stack and a demo link.</p></div>
+        </div> -->
+      <!-- </div> -->
     </div>
   </div>
 
@@ -1429,6 +1433,7 @@
 </body>
 
 </html>
+
 
 
 
