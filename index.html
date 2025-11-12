@@ -778,19 +778,69 @@
       removeTask(name);
     }
 
-    // draggable title bars
+    // draggable title bars (NOW WITH TOUCH SUPPORT)
     function makeDraggable(winEl){
       const title = winEl.querySelector('.title');
-      title.addEventListener('mousedown',function(e){
+      let offsetX, offsetY, startX, startY;
+
+      // This function starts the drag, for either mouse or touch
+      function onDragStart(e) {
         winEl.style.zIndex = Date.now();
         const rect = winEl.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
-        const offsetY = e.clientY - rect.top;
-        function onMove(ev){winEl.style.left=(ev.clientX-offsetX)+'px';winEl.style.top=(ev.clientY-offsetY)+'px';}
-        function done(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',done)}
-        document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',done);
-      });
+
+        // Check if it's a touch event or mouse event
+        if (e.type === 'touchstart') {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          // IMPORTANT: Prevent the page from scrolling on mobile
+          e.preventDefault(); 
+        } else {
+          startX = e.clientX;
+          startY = e.clientY;
+        }
+
+        offsetX = startX - rect.left;
+        offsetY = startY - rect.top;
+
+        // Add the 'move' and 'end' listeners to the whole document
+        document.addEventListener('mousemove', onDragMove);
+        document.addEventListener('mouseup', onDragEnd);
+        document.addEventListener('touchmove', onDragMove);
+        document.addEventListener('touchend', onDragEnd);
+      }
+
+      // This function moves the window
+      function onDragMove(e) {
+        let moveX, moveY;
+
+        // Get the correct coordinates
+        if (e.type === 'touchmove') {
+          moveX = e.touches[0].clientX;
+          moveY = e.touches[0].clientY;
+        } else {
+          moveX = e.clientX;
+          moveY = e.clientY;
+        }
+
+        winEl.style.left = (moveX - offsetX) + 'px';
+        winEl.style.top = (moveY - offsetY) + 'px';
+      }
+
+      // This function stops the drag
+      function onDragEnd() {
+        // Remove all listeners from the document
+        document.removeEventListener('mousemove', onDragMove);
+        document.removeEventListener('mouseup', onDragEnd);
+        document.removeEventListener('touchmove', onDragMove);
+        document.removeEventListener('touchend', onDragEnd);
+      }
+
+      // Attach the 'start' listeners to the title bar
+      title.addEventListener('mousedown', onDragStart);
+      // Add the touch listener. { passive: false } is needed to allow e.preventDefault()
+      title.addEventListener('touchstart', onDragStart, { passive: false });
     }
+    
     document.querySelectorAll('.win').forEach(winEl => {
       makeDraggable(winEl);
       makeFocusable(winEl);
@@ -1346,4 +1396,5 @@
     document.getElementById('desktop').style.opacity=0; setTimeout(()=>{document.getElementById('desktop').style.transition='opacity .6s';document.getElementById('desktop').style.opacity=1},600);
   </script>
 </body>
+
 </html>
